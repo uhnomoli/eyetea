@@ -15,8 +15,8 @@ while ((${{ variables[4] }} = ${{ variables[2] }}.Read(
         ${{ variables[3] }}, 0, ${{ variables[3] }}.Length)) -ne 0) {
     ${{ variables[5] }} = (New-Object -TypeName System.Text.ASCIIEncoding).
         GetString(${{ variables[3] }}, 0, ${{ variables[4] }})
-    & { Invoke-Expression ${{ variables[5] }} } 2>&1 |
-        Tee-Object -Variable {{ variables[6] }} | Out-Null
+    ${{ variables[6] }} = (Invoke-Expression ${{ variables[5] }} 2>&1 |
+        Out-String)
     ${{ variables[7] }} = "[38;5;196m>-[0m [38;5;250m${PWD}[0m"
     ${{ variables[8] }} = "{0}`n{1} {2} " -f
         (${{ variables[6] }} | Out-String),
