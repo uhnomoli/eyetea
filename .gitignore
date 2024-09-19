@@ -1,0 +1,11 @@
+# python byproducts
+.venv/
+__pycache__/
+build/
+dist/
+*.egg-info
+*.py[cdo]
+
+# vim byproducts
+*.sw[a-p]
+

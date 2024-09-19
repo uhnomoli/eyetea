@@ -1,0 +1,123 @@
+* {
+    scrollbar-color: $text 50%;
+    scrollbar-size: 1 1;
+}
+
+EventEntry {
+    background: $surface;
+    border-top: solid #696969 50%;
+    padding: 0;
+
+    &.first {
+        border-top: none;
+    }
+
+    & > Contents {
+        padding: 1 2;
+    }
+}
+
+EventEntryTitle {
+    padding: 0 1;
+
+    &:focus {
+        background: $background 0%;
+    }
+
+    .event-entry-title--error {
+        background: #780028;
+    }
+
+    .event-entry-title--error-muted {
+        background: #52001B;
+        color: #D38CA4;
+    }
+
+    .event-entry-title--highlight {
+        background: #404040;
+    }
+
+    .event-entry-title--highlight-muted {
+        background: #303030;
+        color: #999999;
+    }
+
+    .event-entry-title--info {
+        background: #004578;
+    }
+
+    .event-entry-title--info-muted {
+        background: #002452;
+        color: #658BBC;
+    }
+
+    .event-entry-title--success {
+        background: #008139;
+    }
+
+    .event-entry-title--success-muted {
+        background: #005225;
+        color: #56AD7D;
+    }
+}
+
+RichLog {
+    height: auto;
+    overflow: auto auto;
+}
+
+Screen {
+    grid-columns: 1.5fr 1fr;
+    grid-size: 2 2;
+    layout: grid;
+}
+
+.box {
+    border: solid #696969;
+    height: 100%;
+}
+
+.error {
+    background: $error-darken-3 50%;
+}
+
+.success {
+    background: $success-darken-3 50%;
+}
+
+#downloads {
+    background: $surface;
+    border-title-color: $text;
+    row-span: 2;
+
+    &.disabled {
+        hatch: left #404040 75%;
+    }
+
+    & > .tree--cursor,
+    &:focus > .tree--cursor {
+        background: #002452;
+        color: #8EA9CD;
+    }
+
+    & > .tree--guides,
+    & > .tree--guides-hover,
+    & > .tree--guides-selected {
+        color: #404040;
+        text-style: none;
+    }
+
+    & > .tree--highlight {
+        text-style: none;
+    }
+
+    & > .tree--highlight-line {
+        background: $surface;
+    }
+}
+
+#events-eyetea, #events-http {
+    border-title-color: $text;
+    padding: 1 1;
+}
+

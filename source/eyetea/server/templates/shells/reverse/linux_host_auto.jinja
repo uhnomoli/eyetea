@@ -1,0 +1,18 @@
+START="$SECONDS"
+TIMEOUT=5
+
+while [[ $(stty size) == "0 0" ]]; do
+    if (( ($SECONDS - $START) >= $TIMEOUT )); then
+        break
+    fi
+
+    sleep 0.1
+done
+
+COMMAND='socat'
+if command -v rlwrap >/dev/null 2>&1; then
+    COMMAND="rlwrap ${COMMAND}"
+fi
+
+$COMMAND - TCP-LISTEN:{{ lport }},bind={{ lhost }},fork,reuseaddr
+

