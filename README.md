@@ -92,8 +92,8 @@ option. Any files in the given directory can be downloaded from the `/dl`
 endpoint:
 
 ```shell
-$ tree
-.
+$ tree downloads
+downloads
 ├── linux
 │   └── linpeas.sh
 └── windows
