@@ -5,7 +5,7 @@
 
 EventEntry {
     background: $surface;
-    border-top: solid #696969 50%;
+    border-top: solid $surface-lighten-3 50%;
     padding: 0;
 
     &.first {
@@ -25,39 +25,43 @@ EventEntryTitle {
     }
 
     .event-entry-title--error {
-        background: #780028;
+        background: $error-darken-2;
+        color: $foreground;
     }
 
     .event-entry-title--error-muted {
-        background: #52001B;
-        color: #D38CA4;
+        background: $error-muted;
+        color: $text-error;
     }
 
     .event-entry-title--highlight {
-        background: #404040;
+        background: $surface-lighten-2;
+        color: $foreground;
     }
 
     .event-entry-title--highlight-muted {
-        background: #303030;
-        color: #999999;
+        background: $surface;
+        color: $foreground-muted;
     }
 
     .event-entry-title--info {
-        background: #004578;
+        background: $primary-darken-2;
+        color: $foreground;
     }
 
     .event-entry-title--info-muted {
-        background: #002452;
-        color: #658BBC;
+        background: $primary-muted;
+        color: $text-primary;
     }
 
     .event-entry-title--success {
-        background: #008139;
+        background: $success-darken-2;
+        color: $foreground;
     }
 
     .event-entry-title--success-muted {
-        background: #005225;
-        color: #56AD7D;
+        background: $success-muted;
+        color: $text-success;
     }
 }
 
@@ -73,7 +77,7 @@ Screen {
 }
 
 .box {
-    border: solid #696969;
+    border: solid $surface-lighten-3;
     height: 100%;
 }
 
@@ -86,24 +90,24 @@ Screen {
 }
 
 #downloads {
-    background: $surface;
+    background: transparent;
     border-title-color: $text;
     row-span: 2;
 
     &.disabled {
-        hatch: left #404040 75%;
+        hatch: left $surface-lighten-1 75%;
     }
 
     & > .tree--cursor,
     &:focus > .tree--cursor {
-        background: #002452;
-        color: #8EA9CD;
+        background: $primary-muted;
+        color: $text-primary;
     }
 
     & > .tree--guides,
     & > .tree--guides-hover,
     & > .tree--guides-selected {
-        color: #404040;
+        color: $surface-lighten-1;
         text-style: none;
     }
 
@@ -112,7 +116,7 @@ Screen {
     }
 
     & > .tree--highlight-line {
-        background: $surface;
+        background: transparent;
     }
 }
 
