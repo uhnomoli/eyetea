@@ -46,9 +46,9 @@ class UI(textual.app.App):
         self.server_log_start()
 
     def on_mount(self):
-        self.query_one('#events-eyetea').border_title = '[ events :: eyetea ]'
-        self.query_one('#events-http').border_title = '[ events :: http ]'
-        self.query_one('#downloads').border_title = '[ downloads ]'
+        self.query_one('#events-eyetea').border_title = '\[ events :: eyetea ]'
+        self.query_one('#events-http').border_title = '\[ events :: http ]'
+        self.query_one('#downloads').border_title = '\[ downloads ]'
 
     def on_unmount(self):
         self.server_log_stop()
