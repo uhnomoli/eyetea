@@ -1,19 +1,21 @@
+import json
 import multiprocessing
 
 import textual
 import textual.app
 import textual.binding
-import textual.color
 import textual.containers
+import textual.content
 import textual.css.query
+import textual.highlight
 import textual.widgets
 
-from . import widgets
 from .. import events
 
 
 class UI(textual.app.App):
     BINDINGS = [
+        textual.binding.Binding('ctrl+c', 'copy'),
         textual.binding.Binding('ctrl+z', 'suspend_process')]
     CSS_PATH = 'static/eyetea.tcss'
 
@@ -55,6 +57,46 @@ class UI(textual.app.App):
         self.server_stop()
 
 
+    def server_log_entry_create(self, entry):
+        for attribute in ('data', 'level', 'source'):
+            if not hasattr(entry, attribute):
+                raise ValueError(f'server log entry is missing {attribute}')
+
+        data = events.DATA_MAP.get(entry.source, None)
+        data = data(entry) if data else entry.data
+
+        foreground = entry.level == events.Level.INFO
+        foreground = 'primary' if foreground else f'{entry.level}'
+
+        message = events.MESSAGE_MAP.get(entry.source, None)
+        message = message(entry) if message else entry.message.split('_', 1)[1]
+
+        icon = events.ICON_MAP.get(entry.source, '')
+        path = entry.data['request']['url']['path']
+        time = entry.asctime.replace(',', '.')
+
+        content = json.dumps(data, indent=4, sort_keys=True)
+        content = textual.highlight.highlight(
+            content, language='json', tab_size=4)
+
+        title = textual.content.Content().join([
+            textual.content.Content.from_markup(
+                '[$foreground-muted on $surface] $icon [/]', icon=icon),
+            textual.content.Content.from_markup(
+                f'[$text-{foreground} on ${foreground}-muted] $time [/]',
+                time=time),
+            textual.content.Content.from_markup(
+                f'[$foreground on ${foreground}-darken-2] $message [/]',
+                message=message),
+            textual.content.Content.from_markup(
+                '[$foreground on $surface-lighten-2] $path [/]', path=path)])
+
+        return textual.widgets.Collapsible(
+            textual.widgets.Static(content),
+            collapsed_symbol='+',
+            expanded_symbol='-',
+            title=title)
+
     @textual.work(exclusive=True, group='server_log', thread=True)
     def server_log_start(self):
         worker = textual.worker.get_current_worker()
@@ -83,12 +125,9 @@ class UI(textual.app.App):
         except textual.css.query.NoMatches:
             return
 
-        widget = widgets.EventEntry(entry=entry)
+        widget = self.server_log_entry_create(entry)
 
         await container.mount(widget, before=0)
-
-        for widget in container.query('EventEntry')[:2]:
-            widget.toggle_class('first')
 
 
     @textual.work(exclusive=True, group='server', thread=True)

@@ -1,73 +1,32 @@
 * {
-    scrollbar-color: $text 50%;
+    scrollbar-background: $surface-darken-1;
+    scrollbar-background-active: $surface-darken-1;
+    scrollbar-background-hover: $surface-darken-1;
+    scrollbar-color: $surface-lighten-1;
     scrollbar-size: 1 1;
 }
 
-EventEntry {
-    background: $surface;
+Collapsible {
+    background: transparent;
     border-top: solid $surface-lighten-3 50%;
     padding: 0;
 
-    &.first {
+    &:first-child {
         border-top: none;
     }
 
     & > Contents {
-        padding: 1 2;
+        padding: 0;
     }
 }
 
-EventEntryTitle {
+CollapsibleTitle {
     padding: 0 1;
 
     &:focus {
         background: $background 0%;
+        text-style: none;
     }
-
-    .event-entry-title--error {
-        background: $error-darken-2;
-        color: $foreground;
-    }
-
-    .event-entry-title--error-muted {
-        background: $error-muted;
-        color: $text-error;
-    }
-
-    .event-entry-title--highlight {
-        background: $surface-lighten-2;
-        color: $foreground;
-    }
-
-    .event-entry-title--highlight-muted {
-        background: $surface;
-        color: $foreground-muted;
-    }
-
-    .event-entry-title--info {
-        background: $primary-darken-2;
-        color: $foreground;
-    }
-
-    .event-entry-title--info-muted {
-        background: $primary-muted;
-        color: $text-primary;
-    }
-
-    .event-entry-title--success {
-        background: $success-darken-2;
-        color: $foreground;
-    }
-
-    .event-entry-title--success-muted {
-        background: $success-muted;
-        color: $text-success;
-    }
-}
-
-RichLog {
-    height: auto;
-    overflow: auto auto;
 }
 
 Screen {
@@ -76,17 +35,13 @@ Screen {
     layout: grid;
 }
 
+VerticalScroll {
+    layout: stream;
+}
+
 .box {
     border: solid $surface-lighten-3;
     height: 100%;
-}
-
-.error {
-    background: $error-darken-3 50%;
-}
-
-.success {
-    background: $success-darken-3 50%;
 }
 
 #downloads {

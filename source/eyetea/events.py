@@ -1,6 +1,5 @@
 import enum
 import logging
-import logging.handlers
 
 import flask
 import werkzeug.utils
@@ -85,4 +84,15 @@ class RequestFormatter(logging.Formatter):
             record.source = Source.INTERNAL
 
         return super().format(record)
+
+
+DATA_MAP = {
+    Source.HTTP_REQUEST: lambda record: record.data['request'],
+    Source.HTTP_RESPONSE: lambda record: record.data['response']}
+ICON_MAP = {
+    Source.HTTP_REQUEST: '\u2192',
+    Source.HTTP_RESPONSE: '\u2190'}
+MESSAGE_MAP = {
+    Source.HTTP_REQUEST: lambda record: record.data['request']['method'],
+    Source.HTTP_RESPONSE: lambda record: record.data['response']['status']}
 
